@@ -26,7 +26,7 @@ public class Cuenta {
     this.movimientos = movimientos;
   }
 
-  public void poner(double cuanto) {
+  public void poner(double cuanto) { // Duplicated code y poco grado de abstracción
     if (cuanto <= 0) {
       throw new MontoNegativoException(cuanto + ": el monto a ingresar debe ser un valor positivo");
     }
@@ -35,11 +35,11 @@ public class Cuenta {
       throw new MaximaCantidadDepositosException("Ya excedio los " + 3 + " depositos diarios");
     }
 
-    new Movimiento(LocalDate.now(), cuanto, true).agregateA(this);
+    new Movimiento(LocalDate.now(), cuanto, true).agregateA(this); // Duplicated code con línea 54
   }
 
-  public void sacar(double cuanto) {
-    if (cuanto <= 0) {
+  public void sacar(double cuanto) { // Long method y poco grado de abstracción
+    if (cuanto <= 0) { // Duplicated code
       throw new MontoNegativoException(cuanto + ": el monto a ingresar debe ser un valor positivo");
     }
     if (getSaldo() - cuanto < 0) {
@@ -59,7 +59,7 @@ public class Cuenta {
     movimientos.add(movimiento);
   }
 
-  public double getMontoExtraidoA(LocalDate fecha) {
+  public double getMontoExtraidoA(LocalDate fecha) { // Podría considerarse como message chains (aunque no estoy seguro porque se trata de mensaje de colecciones; igualmente hay lógica que se peude abstraer para lograr mayor expresividad)
     return getMovimientos().stream()
         .filter(movimiento -> !movimiento.isDeposito() && movimiento.getFecha().equals(fecha))
         .mapToDouble(Movimiento::getMonto)
