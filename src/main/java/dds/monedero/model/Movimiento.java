@@ -45,7 +45,7 @@ public class Movimiento {
 
   public void agregateA(Cuenta cuenta) { // Mispalced method
     cuenta.setSaldo(calcularValor(cuenta));
-    cuenta.agregarMovimiento(fecha, monto, esDeposito); // Long parameter list
+    cuenta.agregarMovimiento(this);
   }
 
   public double calcularValor(Cuenta cuenta) { // Mispalced method
