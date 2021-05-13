@@ -55,4 +55,8 @@ public class Movimiento {
       return cuenta.getSaldo() - getMonto();
     }
   }
+
+  public boolean esExtraccionConFecha(LocalDate fecha) {
+    return this.isDeposito() && this.getFecha().equals(fecha);
+  }
 }

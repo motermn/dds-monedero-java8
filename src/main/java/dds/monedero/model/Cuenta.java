@@ -75,9 +75,9 @@ public class Cuenta {
     movimientos.add(movimiento);
   }
 
-  public double getMontoExtraidoA(LocalDate fecha) { // Podría considerarse como message chains (aunque no estoy seguro porque se trata de mensaje de colecciones; igualmente hay lógica que se peude abstraer para lograr mayor expresividad)
+  public double getMontoExtraidoA(LocalDate fecha) {
     return getMovimientos().stream()
-        .filter(movimiento -> !movimiento.isDeposito() && movimiento.getFecha().equals(fecha))
+        .filter(movimiento -> movimiento.esExtraccionConFecha(fecha))
         .mapToDouble(Movimiento::getMonto)
         .sum();
   }
