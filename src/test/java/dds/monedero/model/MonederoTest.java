@@ -7,7 +7,9 @@ import dds.monedero.exceptions.SaldoMenorException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MonederoTest {
   private Cuenta cuenta;
@@ -18,24 +20,26 @@ public class MonederoTest {
   }
 
   @Test
-  void Poner() {
+  public void UnDepositoSeRealizaCorrectamente() {
     cuenta.poner(1500);
+    assertEquals(1500, cuenta.getSaldo());
   }
 
   @Test
-  void PonerMontoNegativo() {
+  public void NoSePuedeDepositarUnMontoNegativo() {
     assertThrows(MontoNegativoException.class, () -> cuenta.poner(-1500));
   }
 
   @Test
-  void TresDepositos() {
+  public void TresDepositosSeRealizanCorrectamente() {
     cuenta.poner(1500);
     cuenta.poner(456);
     cuenta.poner(1900);
+    assertEquals(3856, cuenta.getSaldo());
   }
 
   @Test
-  void MasDeTresDepositos() {
+  public void NoSePuedenrealizarMasDeTresDepositos() {
     assertThrows(MaximaCantidadDepositosException.class, () -> {
           cuenta.poner(1500);
           cuenta.poner(456);
@@ -45,7 +49,7 @@ public class MonederoTest {
   }
 
   @Test
-  void ExtraerMasQueElSaldo() {
+  public void NoSePuedeExtraerMasQueElSaldo() {
     assertThrows(SaldoMenorException.class, () -> {
           cuenta.setSaldo(90);
           cuenta.sacar(1001);
@@ -53,7 +57,7 @@ public class MonederoTest {
   }
 
   @Test
-  public void ExtraerMasDe1000() {
+  public void NoSePuedeExtraerMasDelMontoDiarioPermitido() {
     assertThrows(MaximoExtraccionDiarioException.class, () -> {
       cuenta.setSaldo(5000);
       cuenta.sacar(1001);
@@ -61,8 +65,16 @@ public class MonederoTest {
   }
 
   @Test
-  public void ExtraerMontoNegativo() {
+  public void NoSePuedeExtraerUnMontoNegativo() {
     assertThrows(MontoNegativoException.class, () -> cuenta.sacar(-500));
   }
+
+  @Test
+  public void UnaExtraccionSeRealizaConExito() {
+    cuenta.setSaldo(5000);
+    cuenta.sacar(1000);
+    assertEquals(4000, cuenta.getSaldo());
+  }
+
 
 }
