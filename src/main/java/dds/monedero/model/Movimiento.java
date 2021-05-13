@@ -44,16 +44,4 @@ public abstract class Movimiento {
 
   public abstract boolean isExtraccion();
 
-  public void agregateA(Cuenta cuenta) { // Mispalced method
-    cuenta.setSaldo(calcularValor(cuenta));
-    cuenta.agregarMovimiento(this);
-  }
-
-  public double calcularValor(Cuenta cuenta) { // Mispalced method
-    if (this.isDeposito()) {
-      return cuenta.getSaldo() + getMonto();
-    } else {
-      return cuenta.getSaldo() - getMonto();
-    }
-  }
 }

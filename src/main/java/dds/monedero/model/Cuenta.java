@@ -29,7 +29,8 @@ public class Cuenta {
   public void poner(double cuanto) {
     this.validarMontoNoNegativo(cuanto);
     this.validarCantidadDeDepositosDiariosMenorA(3);
-    new Deposito(LocalDate.now(), cuanto).agregateA(this);
+    this.sumarSaldo(cuanto);
+    this.agregarMovimiento(new Deposito(LocalDate.now(), cuanto));
   }
 
   public void validarMontoNoNegativo(double monto) {
@@ -44,11 +45,24 @@ public class Cuenta {
     }
   }
 
+  /* Podría haber hecho un método común tanto para sumar como para restar una cantidad al saldo, que sea modificarSaldo(double cantidad), pero al momento de restar
+   el saldo cuando se realiza una extracción, debería pasarle "- cuanto" por parámetro, y eso me pareció un poco "feo", aunque es la única forma que se me ocurió para
+   hacerlo.*/
+
+  public void sumarSaldo(double cantidad) {
+    this.saldo += cantidad;
+  }
+
+  public void restarSaldo(double cantidad) {
+    this.saldo -= cantidad;
+  }
+
   public void sacar(double cuanto) {
     this.validarMontoNoNegativo(cuanto);
     this.validarSaldoSuperiorAMontoAExtraer(cuanto);
     this.validarMontoExtraccionDiaria(cuanto);
-    new Extraccion(LocalDate.now(), cuanto).agregateA(this);
+    this.restarSaldo(cuanto);
+    this.agregarMovimiento(new Extraccion(LocalDate.now(), cuanto));
   }
 
   public void validarSaldoSuperiorAMontoAExtraer(double monto) {
@@ -66,20 +80,19 @@ public class Cuenta {
   }
 
   public double limiteExtraccionRestanteDelDia() {
-    double montoExtraidoHoy = this.getMontoExtraidoA(LocalDate.now());
-    return this.limiteExtraccoinDiaria() - montoExtraidoHoy;
+    double montoExtraidoHoy = this.getMontoExtraidoEn(LocalDate.now());
+    return this.limiteExtraccionDiaria() - montoExtraidoHoy;
   }
 
-  private double limiteExtraccoinDiaria() {
+  private double limiteExtraccionDiaria() {
     return 1000;
   }
-
 
   public void agregarMovimiento(Movimiento movimiento) {
     movimientos.add(movimiento);
   }
 
-  public double getMontoExtraidoA(LocalDate fecha) {
+  public double getMontoExtraidoEn(LocalDate fecha) {
     return getMovimientos().stream()
         .filter(movimiento -> movimiento.fueExtraido(fecha))
         .mapToDouble(Movimiento::getMonto)
