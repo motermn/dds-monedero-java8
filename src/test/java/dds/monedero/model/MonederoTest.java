@@ -7,6 +7,8 @@ import dds.monedero.exceptions.SaldoMenorException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
+
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.*;
@@ -76,5 +78,22 @@ public class MonederoTest {
     assertEquals(4000, cuenta.getSaldo());
   }
 
+  @Test
+  public void ElMontoExtraidoEnUnaDeterminadaFechaSeCalculaBien() {
+    this.depositosDeHoy();
+    this.extraccionesDeHoy();
+    assertEquals(800, cuenta.getMontoExtraidoEn(LocalDate.now()));
+  }
 
+  private void depositosDeHoy() {
+    cuenta.poner(5000);
+    cuenta.poner(4000);
+  }
+
+  private void extraccionesDeHoy() {
+    cuenta.sacar(200);
+    cuenta.sacar(200);
+    cuenta.sacar(200);
+    cuenta.sacar(200);
+  }
 }

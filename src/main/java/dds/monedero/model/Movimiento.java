@@ -43,5 +43,4 @@ public abstract class Movimiento {
   public abstract boolean isDeposito();
 
   public abstract boolean isExtraccion();
-
 }
