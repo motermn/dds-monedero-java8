@@ -26,16 +26,22 @@ public class Cuenta {
     this.movimientos = movimientos;
   }
 
-  public void poner(double cuanto) { // Duplicated code y poco grado de abstracción
-    if (cuanto <= 0) {
-      throw new MontoNegativoException(cuanto + ": el monto a ingresar debe ser un valor positivo");
-    }
-
-    if (getMovimientos().stream().filter(movimiento -> movimiento.isDeposito()).count() >= 3) {
-      throw new MaximaCantidadDepositosException("Ya excedio los " + 3 + " depositos diarios");
-    }
-
+  public void poner(double cuanto) {
+    this.validarMontoNoNegativo(cuanto);
+    this.validarCantidadDeDepositosDiariosMenorA(3);
     new Movimiento(LocalDate.now(), cuanto, true).agregateA(this); // Duplicated code con línea 54
+  }
+
+  public void validarMontoNoNegativo(double monto) {
+    if (monto <= 0) {
+      throw new MontoNegativoException(monto + ": el monto a ingresar debe ser un valor positivo");
+    }
+  }
+
+  public void validarCantidadDeDepositosDiariosMenorA(int cantidadDepositosDiarios) {
+    if (this.movimientos.stream().filter(movimiento -> movimiento.isDeposito()).count() >= cantidadDepositosDiarios) {
+      throw new MaximaCantidadDepositosException("Ya excedio los " + cantidadDepositosDiarios + " depositos diarios");
+    }
   }
 
   public void sacar(double cuanto) { // Long method y poco grado de abstracción

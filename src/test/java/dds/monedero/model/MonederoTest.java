@@ -39,7 +39,7 @@ public class MonederoTest {
   }
 
   @Test
-  public void NoSePuedenrealizarMasDeTresDepositos() {
+  public void NoSePuedenRealizarMasDeTresDepositos() {
     assertThrows(MaximaCantidadDepositosException.class, () -> {
           cuenta.poner(1500);
           cuenta.poner(456);
