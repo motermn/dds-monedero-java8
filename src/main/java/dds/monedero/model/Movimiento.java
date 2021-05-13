@@ -2,17 +2,15 @@ package dds.monedero.model;
 
 import java.time.LocalDate;
 
-public class Movimiento {
+public abstract class Movimiento {
   private LocalDate fecha;
   //En ningún lenguaje de programación usen jamás doubles para modelar dinero en el mundo real
   //siempre usen numeros de precision arbitraria, como BigDecimal en Java y similares
   private double monto;
-  private boolean esDeposito; // Temporary field
 
-  public Movimiento(LocalDate fecha, double monto, boolean esDeposito) {
+  public Movimiento(LocalDate fecha, double monto) {
     this.fecha = fecha;
     this.monto = monto;
-    this.esDeposito = esDeposito;
   }
 
   public double getMonto() {
@@ -24,24 +22,27 @@ public class Movimiento {
   }
 
   public boolean fueDepositado(LocalDate fecha) {
-    return isDeposito() && esDeLaFecha(fecha);
+    return this.isDeposito() && this.esDeLaFecha(fecha);
   }
 
   public boolean fueExtraido(LocalDate fecha) {
-    return isExtraccion() && esDeLaFecha(fecha);
+    return this.isExtraccion() && this.esDeLaFecha(fecha);
   }
 
   public boolean esDeLaFecha(LocalDate fecha) {
     return this.fecha.equals(fecha);
   }
 
-  public boolean isDeposito() {
-    return esDeposito;
-  }
+  /* Considerando que los dos tipos de movimientos posibles para una cuenta pueden ser depósito y extracción, decidí hacer este refactor agregando los métodos
+  isDeposito() e isExtraccion(), e implementarlos en las dos clases (Depósito y Extracción). Tomé esta decisión de diseño porque no creo que agregue demasiada
+  complejidad, pues sólo habrá 4 métodos para el propósito de determinar de qué tipo de movimiento se trata uno en particular.
+  Por otra parte, decidí modelarlo con herencia, pues hay lógica y atributos comunes para ambos tipos de movimientos, y además, tanto Extracción como Depósito
+  SON Movimientos.
+ */
 
-  public boolean isExtraccion() {
-    return !esDeposito;
-  }
+  public abstract boolean isDeposito();
+
+  public abstract boolean isExtraccion();
 
   public void agregateA(Cuenta cuenta) { // Mispalced method
     cuenta.setSaldo(calcularValor(cuenta));
@@ -49,14 +50,10 @@ public class Movimiento {
   }
 
   public double calcularValor(Cuenta cuenta) { // Mispalced method
-    if (esDeposito) {
+    if (this.isDeposito()) {
       return cuenta.getSaldo() + getMonto();
     } else {
       return cuenta.getSaldo() - getMonto();
     }
-  }
-
-  public boolean esExtraccionConFecha(LocalDate fecha) {
-    return this.isDeposito() && this.getFecha().equals(fecha);
   }
 }
